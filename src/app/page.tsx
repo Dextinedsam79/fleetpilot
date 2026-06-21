@@ -1,65 +1,110 @@
-import Image from "next/image";
+import { createClient } from '@/lib/supabase/server'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button, buttonVariants } from '@/components/ui/button'
+import Link from 'next/link'
+import Image from 'next/image'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { signout } from './auth/actions'
 
-export default function Home() {
+export default async function LandingPage() {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  let dashboardPath = '/customer/dashboard'
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    if (profile?.role === 'STAFF') dashboardPath = '/staff/vehicles'
+    if (profile?.role === 'MANAGER' || profile?.role === 'ADMIN') dashboardPath = '/manager/dashboard'
+  }
+
+  const { data: vehicles } = await supabase
+    .from('vehicles')
+    .select('*, vehicle_images(url, is_primary)')
+    .eq('status', 'AVAILABLE')
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <header className="h-16 border-b bg-background flex items-center px-6 justify-between shrink-0">
+        <div className="flex items-center space-x-2">
+          <Image src="/logo.png" alt="FleetPilot Logo" width={32} height={32} className="object-contain" />
+          <span className="font-bold text-xl text-primary tracking-tight">FleetPilot</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <nav className="flex items-center space-x-4">
+          <ThemeToggle />
+          {user ? (
+            <>
+              <Link href={dashboardPath} className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
+              <form action={signout}>
+                <button type="submit" className={buttonVariants({ variant: 'outline' })}>Sign Out</button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">Sign In</Link>
+              <Link href="/register" className={buttonVariants()}>Get Started</Link>
+            </>
+          )}
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-24 px-6 text-center border-b">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-primary mb-6 drop-shadow-sm">Drive More. Manage Less.</h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+          The enterprise fleet management platform built for modern rental businesses.
+          Book your next vehicle with absolute confidence.
+        </p>
+        <Link href="#fleet" className={buttonVariants({ size: "lg", className: "h-14 px-10 text-lg font-semibold shadow-xl rounded-full" })}>Browse Fleet</Link>
+      </section>
+
+      {/* Vehicle Catalogue */}
+      <main id="fleet" className="flex-1 max-w-7xl mx-auto w-full p-6 py-16">
+        <h2 className="text-3xl font-bold tracking-tight mb-8">Available Vehicles</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {vehicles && vehicles.length > 0 ? (
+            vehicles.map((v: any) => (
+              <Card key={v.id} className="overflow-hidden hover:shadow-lg transition-shadow border-border/50">
+                <div className="aspect-[16/9] bg-muted relative">
+                  <Image 
+                    src={v.vehicle_images && v.vehicle_images.length > 0 
+                      ? (v.vehicle_images.find((img: any) => img.is_primary)?.url || v.vehicle_images[0].url) 
+                      : `https://loremflickr.com/800/600/${encodeURIComponent(v.make)},car/all`} 
+                    alt={`${v.make} ${v.model}`} 
+                    fill 
+                    className="object-cover"
+                    unoptimized // Because loremflickr uses redirects
+                  />
+                  <Badge className="absolute top-4 right-4">{v.status}</Badge>
+                </div>
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-start">
+                    <span>{v.year} {v.make} {v.model}</span>
+                    <span className="text-lg text-primary">₦{v.daily_rate}<span className="text-sm text-muted-foreground font-normal">/day</span></span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2 text-sm text-muted-foreground font-mono">
+                    <span className="bg-muted px-2 py-1 rounded">VIN: {v.vin.substring(0,8)}...</span>
+                    <span className="bg-muted px-2 py-1 rounded">Fuel: {v.fuel_level}%</span>
+                    <span className="bg-muted px-2 py-1 rounded">Mi: {v.mileage.toLocaleString()}</span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Link href={`/book/${v.id}`} className={buttonVariants({ className: "w-full" })}>Book Now</Link>
+                </CardFooter>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full py-20 text-center text-muted-foreground">
+              No vehicles available at the moment.
+            </div>
+          )}
         </div>
       </main>
     </div>
-  );
+  )
 }

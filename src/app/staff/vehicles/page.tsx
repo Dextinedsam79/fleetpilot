@@ -29,45 +29,47 @@ export default async function VehiclesPage() {
           <CardTitle>Fleet Overview</CardTitle>
           <CardDescription>A list of all vehicles in your inventory.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>License Plate</TableHead>
-                <TableHead>VIN</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Daily Rate</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vehicles && vehicles.length > 0 ? (
-                vehicles.map((v: any) => (
-                  <TableRow key={v.id}>
-                    <TableCell className="font-medium">{v.year} {v.make} {v.model}</TableCell>
-                    <TableCell className="font-mono text-sm">{v.license_plate}</TableCell>
-                    <TableCell className="font-mono text-sm text-muted-foreground">{v.vin}</TableCell>
-                    <TableCell>
-                      <Badge variant={v.status === 'AVAILABLE' ? 'default' : 'secondary'}>
-                        {v.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">₦{v.daily_rate}/day</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">Edit</Button>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vehicle</TableHead>
+                  <TableHead>License Plate</TableHead>
+                  <TableHead>VIN</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Daily Rate</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {vehicles && vehicles.length > 0 ? (
+                  vehicles.map((v: any) => (
+                    <TableRow key={v.id}>
+                      <TableCell className="font-medium">{v.year} {v.make} {v.model}</TableCell>
+                      <TableCell className="font-mono text-sm">{v.license_plate}</TableCell>
+                      <TableCell className="font-mono text-sm text-muted-foreground">{v.vin}</TableCell>
+                      <TableCell>
+                        <Badge variant={v.status === 'AVAILABLE' ? 'default' : 'secondary'}>
+                          {v.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">₦{v.daily_rate}/day</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">Edit</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                      No vehicles found. Add one to get started.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                    No vehicles found. Add one to get started.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -21,7 +21,7 @@ export default async function BookingDetailsPage({ params }: { params: Promise<{
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Booking Details</h2>
           <p className="text-muted-foreground">ID: {booking.id}</p>
@@ -61,7 +61,7 @@ export default async function BookingDetailsPage({ params }: { params: Promise<{
           <CardTitle>Reservation Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex justify-between items-center border-b pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 gap-4">
             <div>
               <p className="text-sm text-muted-foreground uppercase tracking-wider font-semibold mb-1">Status</p>
               <Badge variant={booking.status === 'PENDING_APPROVAL' ? 'destructive' : booking.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-base">
@@ -74,7 +74,7 @@ export default async function BookingDetailsPage({ params }: { params: Promise<{
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-muted-foreground mb-1">Pickup Date</p>
               <p className="font-medium text-base">{new Date(booking.start_time).toLocaleString()}</p>

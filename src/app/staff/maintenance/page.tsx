@@ -29,51 +29,53 @@ export default async function MaintenancePage() {
           <CardTitle>Service Schedule</CardTitle>
           <CardDescription>Upcoming and completed maintenance tasks.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>Service Type</TableHead>
-                <TableHead>Scheduled Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Cost</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {records && records.length > 0 ? (
-                records.map((r: any) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-medium">
-                      {r.vehicles?.make} {r.vehicles?.model}
-                      <br/>
-                      <span className="text-xs text-muted-foreground font-mono">{r.vehicles?.license_plate}</span>
-                    </TableCell>
-                    <TableCell>{r.type}</TableCell>
-                    <TableCell>{r.scheduled_date || 'N/A'}</TableCell>
-                    <TableCell>
-                      <Badge variant={r.status === 'COMPLETED' ? 'secondary' : r.status === 'DUE' ? 'destructive' : 'default'}>
-                        {r.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">{r.cost ? `₦${r.cost}` : '-'}</TableCell>
-                    <TableCell className="text-right">
-                      <Link href={`/staff/maintenance/${r.id}`}>
-                        <Button variant="ghost" size="sm">Update</Button>
-                      </Link>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vehicle</TableHead>
+                  <TableHead>Service Type</TableHead>
+                  <TableHead>Scheduled Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Cost</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {records && records.length > 0 ? (
+                  records.map((r: any) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium">
+                        {r.vehicles?.make} {r.vehicles?.model}
+                        <br/>
+                        <span className="text-xs text-muted-foreground font-mono">{r.vehicles?.license_plate}</span>
+                      </TableCell>
+                      <TableCell>{r.type}</TableCell>
+                      <TableCell>{r.scheduled_date || 'N/A'}</TableCell>
+                      <TableCell>
+                        <Badge variant={r.status === 'COMPLETED' ? 'secondary' : r.status === 'DUE' ? 'destructive' : 'default'}>
+                          {r.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">{r.cost ? `₦${r.cost}` : '-'}</TableCell>
+                      <TableCell className="text-right">
+                        <Link href={`/staff/maintenance/${r.id}`}>
+                          <Button variant="ghost" size="sm">Update</Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                      No maintenance records found.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                    No maintenance records found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

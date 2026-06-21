@@ -41,50 +41,52 @@ export default async function CustomerDashboardPage({ searchParams }: { searchPa
 
       <Card>
         <CardHeader>
-          <CardTitle>Booking History</CardTitle>
-          <CardDescription>A list of all your reservations.</CardDescription>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>Your latest booking requests and rentals.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>Dates</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Total Price</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bookings && bookings.length > 0 ? (
-                bookings.map((b: any) => (
-                  <TableRow key={b.id}>
-                    <TableCell className="font-medium">
-                      {b.vehicles?.year} {b.vehicles?.make} {b.vehicles?.model}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(b.start_time).toLocaleDateString()} - {new Date(b.end_time).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={b.status === 'COMPLETED' ? 'secondary' : 'default'}>
-                        {b.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">₦{b.total_price}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="outline" size="sm">View Details</Button>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vehicle</TableHead>
+                  <TableHead>Dates</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Total Price</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bookings && bookings.length > 0 ? (
+                  bookings.map((b: any) => (
+                    <TableRow key={b.id}>
+                      <TableCell className="font-medium">
+                        {b.vehicles?.year} {b.vehicles?.make} {b.vehicles?.model}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(b.start_time).toLocaleDateString()} - {new Date(b.end_time).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={b.status === 'COMPLETED' ? 'secondary' : 'default'}>
+                          {b.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">₦{b.total_price}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm">View Details</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                      You have no bookings yet.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                    You have no bookings yet.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

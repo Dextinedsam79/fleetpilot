@@ -28,67 +28,69 @@ export default async function StaffBookingsPage() {
           <CardTitle>All Bookings</CardTitle>
           <CardDescription>Comprehensive list of fleet reservations.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>Dates</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bookings && bookings.length > 0 ? (
-                bookings.map((b: any) => (
-                  <TableRow key={b.id}>
-                    <TableCell className="font-medium">
-                      {b.profiles?.full_name}
-                      <br/>
-                      <span className="text-xs text-muted-foreground">{b.profiles?.email}</span>
-                    </TableCell>
-                    <TableCell>
-                      {b.vehicles?.make} {b.vehicles?.model}
-                      <br/>
-                      <span className="font-mono text-xs text-muted-foreground">{b.vehicles?.license_plate}</span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        {new Date(b.start_time).toLocaleDateString()}
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Vehicle</TableHead>
+                  <TableHead>Dates</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bookings && bookings.length > 0 ? (
+                  bookings.map((b: any) => (
+                    <TableRow key={b.id}>
+                      <TableCell className="font-medium">
+                        {b.profiles?.full_name}
                         <br/>
-                        <span className="text-muted-foreground">to {new Date(b.end_time).toLocaleDateString()}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={b.status === 'PENDING_APPROVAL' ? 'destructive' : b.status === 'ACTIVE' ? 'default' : 'secondary'}>
-                        {b.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <div className="flex justify-end gap-2">
-                        {b.status === 'PENDING_APPROVAL' && (
-                          <form action={approveBookingAction}>
-                            <input type="hidden" name="bookingId" value={b.id} />
-                            <Button type="submit" size="sm" variant="outline">Approve</Button>
-                          </form>
-                        )}
-                        <Link href={`/staff/bookings/${b.id}`}>
-                          <Button variant="ghost" size="sm">Details</Button>
-                        </Link>
-                      </div>
+                        <span className="text-xs text-muted-foreground">{b.profiles?.email}</span>
+                      </TableCell>
+                      <TableCell>
+                        {b.vehicles?.make} {b.vehicles?.model}
+                        <br/>
+                        <span className="font-mono text-xs text-muted-foreground">{b.vehicles?.license_plate}</span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {new Date(b.start_time).toLocaleDateString()}
+                          <br/>
+                          <span className="text-muted-foreground">to {new Date(b.end_time).toLocaleDateString()}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={b.status === 'PENDING_APPROVAL' ? 'destructive' : b.status === 'ACTIVE' ? 'default' : 'secondary'}>
+                          {b.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <div className="flex justify-end gap-2">
+                          {b.status === 'PENDING_APPROVAL' && (
+                            <form action={approveBookingAction}>
+                              <input type="hidden" name="bookingId" value={b.id} />
+                              <Button type="submit" size="sm" variant="outline">Approve</Button>
+                            </form>
+                          )}
+                          <Link href={`/staff/bookings/${b.id}`}>
+                            <Button variant="ghost" size="sm">Details</Button>
+                          </Link>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                      No bookings found.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                    No bookings found.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

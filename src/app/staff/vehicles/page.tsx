@@ -56,7 +56,9 @@ export default async function VehiclesPage() {
                       </TableCell>
                       <TableCell className="text-right">₦{v.daily_rate}/day</TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">Edit</Button>
+                        <Link href={`/staff/vehicles/${v.id}/edit`}>
+                          <Button variant="ghost" size="sm">Edit</Button>
+                        </Link>
                       </TableCell>
                     </TableRow>
                   ))

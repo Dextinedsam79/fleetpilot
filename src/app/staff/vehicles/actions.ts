@@ -41,3 +41,33 @@ export async function addVehicle(formData: FormData) {
   revalidatePath('/staff/vehicles')
   redirect('/staff/vehicles')
 }
+
+export async function updateVehicle(formData: FormData) {
+  const supabase = await createClient()
+
+  const id = formData.get('id') as string
+  const make = formData.get('make') as string
+  const model = formData.get('model') as string
+  const year = parseInt(formData.get('year') as string)
+  const license_plate = formData.get('license_plate') as string
+  const vin = formData.get('vin') as string
+  const daily_rate = parseFloat(formData.get('daily_rate') as string)
+  const mileage = parseInt(formData.get('mileage') as string)
+
+  const { error } = await supabase.from('vehicles').update({
+    make,
+    model,
+    year,
+    license_plate,
+    vin,
+    daily_rate,
+    mileage
+  }).eq('id', id)
+
+  if (error) {
+    redirect(`/staff/vehicles/${id}/edit?error=${encodeURIComponent(error.message)}`)
+  }
+
+  revalidatePath('/staff/vehicles')
+  redirect('/staff/vehicles')
+}

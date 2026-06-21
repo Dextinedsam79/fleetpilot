@@ -14,7 +14,7 @@ export async function approveBookingAction(formData: FormData) {
 
   if (error) {
     console.error('Failed to approve booking:', error)
-    return { error: error.message }
+    throw new Error(error.message)
   }
 
   revalidatePath('/staff/bookings')
@@ -32,7 +32,7 @@ export async function updateBookingStatusAction(formData: FormData) {
 
   if (error) {
     console.error('Failed to update booking status:', error)
-    return { error: error.message }
+    throw new Error(error.message)
   }
 
   revalidatePath('/staff/bookings')
